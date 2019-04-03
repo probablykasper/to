@@ -1,0 +1,104 @@
+#! /bin/bash
+
+FILENAME=${0##*/}
+
+help() {
+echo "
+`tput setaf 2`Usage:`tput setaf 7`
+    `tput setaf 6`$FILENAME`tput setaf 7` <format> [options] <file1> [file2...]
+
+`tput setaf 2`Options:`tput setaf 7`
+    `tput setaf 6`format`tput setaf 7`          File format extension to convert to.
+    `tput setaf 6`      `tput setaf 7`            - mp3s default to 320kbps
+    `tput setaf 6`-v, --verbose`tput setaf 7`   If you love logs.
+    `tput setaf 6`-h, --help`tput setaf 7`      Show this help message.
+    `tput setaf 6``tput setaf 7`
+    `tput setaf 6``tput setaf 7`FFmpeg options are supported too (see ffmpeg -h). Long
+    `tput setaf 6``tput setaf 7`arguments need to be written with quotes (like \"-b:a 128k\")
+"
+}
+
+# if only 0 or 1 arguments
+if [[ "$#" < 2 ]]; then help; exit 0; fi
+
+FORMAT=$1
+# remove format argument
+shift 1
+
+FILES=()
+VERBOSE_FLAG=false
+USER_OPTIONS=false
+OPTIONS=()
+
+if [[ "$FORMAT" = "mp3" ]]; then
+    OPTIONS+=("-b:a")
+    OPTIONS+=("320k")
+fi
+
+# parse arguments
+while (( "$#" )); do
+    case "$1" in
+        -h|--help)
+            if [[ "$HELP_FLAG" = true ]]; then help; exit 0; fi
+            shift ;;
+        -v|--verbose)
+            VERBOSE_FLAG=true
+            shift ;;
+        *)
+            if [[ -f "$1" ]]; then
+                FILES+=("$1")
+            elif [[ "$1" == -* ]]; then
+                USER_OPTIONS=true
+                OPTIONS+=("$1")
+            else
+                echo "Error: File does not exist (Skipping) or invalid argument: $1"
+            fi
+            shift ;;
+    esac
+done
+
+if [[ "$VERBOSE_FLAG" = false ]]; then
+    OPTIONS+=("-loglevel")
+    OPTIONS+=("warning")
+fi
+
+if [[ ${#FILES[@]} = 0 ]]; then
+    echo "Error: No files specified"
+    help
+    exit 1
+fi
+
+if [[ "$USER_OPTIONS" = true ]]; then
+    echo "Passing the following options to ffmpeg: ${OPTIONS[@]}"
+fi
+
+for FILE in "${FILES[@]}"; do
+
+    if [[ -f "$FILE" ]]; then # check if file exists
+        echo "Converting $FILE"
+
+        FILENAME=$(basename "$FILE")
+        FILE_WITHOUT_EXT=${FILE%.*} # remove extension
+        # echo "FILENAME              $FILENAME"
+        # echo "TEMPDIR               $TEMPDIR"
+        NEW_FILE_WIP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
+        ffmpeg -i "${FILE}" ${OPTIONS[@]} "$NEW_FILE_WIP"
+        
+        NEW_FILE="$FILE_WITHOUT_EXT converted.$FORMAT"
+        COUNT=1
+        while [[ -f "$NEW_FILE" ]]; do
+            if [[ -f "$NEW_FILE" ]]; then
+                # echo "FILE EXISTS       $NEW_FILE"
+                NEW_FILE="$FILE_WITHOUT_EXT converted ($COUNT).$FORMAT"
+                (( COUNT++ ))
+            else
+                # echo "FILE DOES NOT EXIST       $NEW_FILE"
+                break
+            fi
+        done
+        mv "$NEW_FILE_WIP" "$NEW_FILE"
+    else
+        echo "Error: File no longer exists (Skipping): $FILE"
+    fi
+
+done
