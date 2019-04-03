@@ -1,0 +1,9 @@
+#! /bin/bash
+
+if [[ $1 == "run" ]]; then
+	docker-compose run --rm "${@:2}"
+elif [[ $1 == "up" ]]; then
+	docker-compose up "${@:2}"; docker-compose down
+else
+	docker-compose "${@:1}"
+fi

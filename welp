@@ -1,0 +1,5 @@
+#! /bin/bash
+
+DIR="$(cd ~/bin; pwd)"
+echo These scripts are installed in $DIR:
+ls -1 ~/bin

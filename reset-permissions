@@ -1,0 +1,21 @@
+#! /bin/bash
+
+if [[ $2 == '' ]]; then
+
+	SCRIPT_FILENAME=${0##*/}
+
+	# Colors
+	GREEN='\033[0;32m'
+	RESET='\033[0m'
+
+	echo    ""
+	echo -e "${GREEN}$SCRIPT_FILENAME${RESET}"
+	echo -e "usage: $SCRIPT_FILENAME <username> <directory>"
+	echo    ""
+else
+
+	USERNAME=$1
+	DIR=$2
+	sudo chmod -RN "${DIR}" && sudo chown -R ${USERNAME} "${DIR}" && sudo chmod -R 755 "${DIR}"
+
+fi

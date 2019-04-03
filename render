@@ -1,0 +1,44 @@
+#! /bin/bash
+
+help() {
+    SCRIPT_FILENAME=${0##*/}
+    echo ""
+    echo "Syntax: $SCRIPT_FILENAME <path> [path...]"
+    echo "    path:    After Effects .aep file for aerender to render."
+    echo "             Can also be a directory that contains .aep files."
+    echo ""
+}
+
+render() {
+    /Applications/Adobe\ After\ Effects\ CC\ 2019/aerender -project "$1"
+}
+if [[ $1 ]]; then
+    ERRORS=()
+    for ARG in "$@"; do
+        echo ""
+        if [[ -d "$ARG" ]]; then
+            for FILE in "$ARG"/*; do
+                if [[ -f "$FILE" && $FILE == */Project.aep ]]; then
+                    render "$FILE"
+                fi
+            done
+        elif [[ -f "$ARG" && $ARG == *.aep ]]; then
+            render "$ARG"
+        else
+            echo ERROR: Not a directory or .aep file: ${ARG}
+            ERRORS+=($ARG)
+        fi
+    done
+    echo ""
+    if [[ ${#ERRORS[@]} != 0 ]]; then
+        echo ERROR: One or more paths were not directories or .aep files:
+        for ELEMENT in ${FILES[@]}; do
+            echo File: $ELEMENT.
+        done
+    else
+        echo "Done rendering"
+    fi
+        
+else
+    help
+fi

@@ -1,0 +1,13 @@
+#! /bin/bash
+
+FILENAME=${0##*/}
+
+if [[ -z "$1" ]]; then
+	echo "Syntax: $FILENAME videofile [subtitles]"
+else
+	if [[ -z "$2" ]]; then
+		ffmpeg -i "${1}" -i "${2}" "${1%.*}.mp4"
+	else
+		ffmpeg -i "${1}" "${1%.*}.mp4"
+	fi
+fi
