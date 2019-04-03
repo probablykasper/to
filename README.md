@@ -1,6 +1,6 @@
 # my-bash-scripts
 
-These are the bash scripts I've made for myself. They're made for macOS, so there's no guarantee they'll work on other OSes.
+These are the basic bash scripts I've made for myself. They're made for macOS, so there's no guarantee they'll work on other OSes.
 
 # Install
 
@@ -8,7 +8,7 @@ These are the bash scripts I've made for myself. They're made for macOS, so ther
 2. Now you need to make the scripts executable. You can do that by running `chmod +x <YOUR_FOLDER>/*`.
 3. Lastly, add the folder to your PATH, so you can call the scripts by their filename in your terminal from anywhere. Edit the file named `.bash_profile` (or create it if it does not exist). Add the following line to it: `export PATH=<YOUR_FOLDER>:$PATH`.
 
-# scripts
+# Scripts
 
 ### welp
 Super simple script that lists the files in the same folder as the script is in. In other words, it lists the scripts here.
@@ -21,7 +21,7 @@ Syntax: chill #m
 Syntax: chill #h #m
 ```
 
-# d-c
+### d-c
 Basic wrapper around the `docker-compose` command (which you should have if you got Docker installed). The command works the same as `docker-compose`, except:
 - When running `d-c run`, it automatically adds the `--rm` argument
 - When running `d-c up`, it automatically runs `docker-compose down` afterwards.
@@ -54,10 +54,28 @@ sudo chmod -R 755 <DIRECTORY>
 ### sleepy
 Hibernates your computer. I usually run this after `render` or `chill`.
 
-### to-gif
-Converts files into gifs. This works, though if you do this frequently I would probably use some app instead.
+### to
+Requires [ffmpeg](https://ffmpeg.org) (which I recommend installing using [Brew](https://brew.sh)).
 
-Requires [ffmpeg](https://ffmpeg.org) (which I recommend installing using [Brew](https://brew.sh))
+Converts audio and video. Running `to` shows this help message:
+```
+Usage:
+    to <format> [options] <file1> [file2...]
+
+Options:
+    format          File format extension to convert to.
+                      - mp3s default to 320kbps
+    -v, --verbose   If you love logs.
+    -h, --help      Show this help message.
+    
+    FFmpeg options are supported too (see ffmpeg -h). Long
+    arguments need to be written with quotes (like "-b:a 128k")
+```
+
+### to-gif
+Requires [ffmpeg](https://ffmpeg.org) (which I recommend installing using [Brew](https://brew.sh)).
+
+Converts videos into gifs. If you do this frequently I would probably use some app instead.
 
 Running `to-gif` shows the syntax:
 ```
@@ -68,4 +86,3 @@ Syntax: to-gif <file> [fps] [scale] [duration] [start_at]
     duration: How long the gif will be, in seconds. Defaults to 999999.
     start_at: Where the video starts, in seconds. Defaults to 0
 ```
-
