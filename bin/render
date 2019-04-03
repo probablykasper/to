@@ -3,9 +3,11 @@
 help() {
     SCRIPT_FILENAME=${0##*/}
     echo ""
-    echo "Syntax: $SCRIPT_FILENAME <path> [path...]"
-    echo "    path:    After Effects .aep file for aerender to render."
-    echo "             Can also be a directory that contains .aep files."
+    echo "`tput setaf 2`Usage:`tput setaf 7`"
+    echo "    `tput setaf 6`$SCRIPT_FILENAME`tput setaf 7` <path>"
+    echo ""
+    echo "`tput setaf 2`Options:`tput setaf 7`"
+    echo "    `tput setaf 6`path`tput setaf 7`    After Effects .aep file for aerender to render."
     echo ""
 }
 
