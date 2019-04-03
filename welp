@@ -1,5 +1,7 @@
 #! /bin/bash
 
-DIR="$(cd ~/bin; pwd)"
+# get the dir that the file is in
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 echo These scripts are installed in $DIR:
-ls -1 ~/bin
+ls -1 $DIR
