@@ -55,7 +55,7 @@ sudo chmod -R 755 <DIRECTORY>
 Hibernates your computer. I usually run this after `render` or `chill`.
 
 ### to
-Requires [ffmpeg](https://ffmpeg.org) (which I recommend installing using [Brew](https://brew.sh)).
+Requires [ImageMagick](https://imagemagick.org) for images and [FFmpeg](https://ffmpeg.org) for audio and video. I recommend installing them using [Brew](https://brew.sh) by running `brew install ffmpeg imagemagick`.
 
 Converts audio and video. Running `to` shows this help message:
 ```
