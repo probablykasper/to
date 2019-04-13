@@ -29,9 +29,11 @@ Basic wrapper around the `docker-compose` command (which you should have if you 
 ## render
 This will render [After Effects](https://www.adobe.com/products/aftereffects.html) projects, assuming you have After Effects installed in `/Applications/Adobe After Effects CC 2019` (Specifically, the `aerender` file needs to be in there). Running `render` shows the syntax:
 ```
-Syntax: render <path>
-    path:    After Effects .aep file for aerender to render.
-             Can also be a directory that contains .aep files.
+Usage:
+    render <file> [file...]
+
+Options:
+    file   After Effects .aep file for After Effects' aerender to render.
 ```
 It was made to be able to support multiple path arguments, as well as taking folders as path arguments to render every .aep file inside those folders, but I don't think that works. Might fix that someday if I need it.
 
