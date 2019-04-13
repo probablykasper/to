@@ -1,46 +1,75 @@
 #! /bin/bash
 
+color() {
+    echo -n "`tput setaf $1`${@:2}"
+    # reset color if there are arguments:
+    if [[ "$#" > 1 ]]; then echo -n "`tput setaf 7`"; fi
+}
+red() { color 1 "$@"; }
+green() { color 2 "$@"; }
+cyan() { color 6 "$@"; }
+reset() { color 7 "$@"; echo -n `tput sgr0`; }
+
+aerender=/Applications/Adobe\ After\ Effects\ CC\ 2019/aerender
+
 help() {
-    SCRIPT_FILENAME=${0##*/}
-    echo ""
-    echo "`tput setaf 2`Usage:`tput setaf 7`"
-    echo "    `tput setaf 6`$SCRIPT_FILENAME`tput setaf 7` <path>"
-    echo ""
-    echo "`tput setaf 2`Options:`tput setaf 7`"
-    echo "    `tput setaf 6`path`tput setaf 7`    After Effects .aep file for aerender to render."
-    echo ""
+    FILENAME=${0##*/}
+    echo "
+    `green Usage:`
+        `cyan $FILENAME` <file> [file...]
+    
+    `green Options:`
+        `cyan file`   After Effects .aep file for After Effects' aerender to render.
+    "
 }
 
-render() {
-    /Applications/Adobe\ After\ Effects\ CC\ 2019/aerender -project "$1"
-}
-if [[ $1 ]]; then
-    ERRORS=()
-    for ARG in "$@"; do
-        echo ""
-        if [[ -d "$ARG" ]]; then
-            for FILE in "$ARG"/*; do
-                if [[ -f "$FILE" && $FILE == */Project.aep ]]; then
-                    render "$FILE"
-                fi
-            done
-        elif [[ -f "$ARG" && $ARG == *.aep ]]; then
-            render "$ARG"
-        else
-            echo ERROR: Not a directory or .aep file: ${ARG}
-            ERRORS+=($ARG)
-        fi
-    done
-    echo ""
-    if [[ ${#ERRORS[@]} != 0 ]]; then
-        echo ERROR: One or more paths were not directories or .aep files:
-        for ELEMENT in ${FILES[@]}; do
-            echo File: $ELEMENT.
-        done
+# no args
+if [[ "$#" < 1 ]]; then help; exit 0; fi
+
+# proactively check for errors
+for ARG in "$@"; do
+    if [[ ! -f "$ARG" ]]; then
+        echo "`red Error:` File does not exist: $ARG"
+        ERRORS=true
+    elif [[ "$ARG" != *.aep ]]; then
+        echo "`red Error:` File must be .aep: $ARG"
+        ERRORS=true
     else
-        echo "Done rendering"
+        FILES+=()
     fi
-        
-else
-    help
+done
+
+# exit if there were errors
+if [[ $ERRORS == true ]]; then exit 1; fi
+
+ERRORS=()
+err() {
+    ERRORS+=("$1")
+    echo `red ✖ Error:` "$1"
+}
+# render
+for ARG in "$@"; do
+    if [[ ! -f "$ARG" ]]; then
+        err "File does not exist: $ARG"
+    elif [[ "$ARG" != *.aep ]]; then
+        err "File must be .aep: $ARG"
+    else
+        echo ""
+        FILE="$(cd "$(dirname "$ARG")" && pwd)/$(basename "$ARG")" # get absolute path
+        command "$aerender" -project "$FILE" || err "Render failed: $ARG"
+    fi
+done
+
+# recap errors
+# if more than one render
+if [[ "$#" > 1 && ${#FILES[@]} ]]; then
+    # if errors
+    if [[ ${#FILES[@]} == 0 ]]; then
+        printf "\n\n\n"
+        echo "`tput bold``red`Errors occured while rendering:`reset`"
+        for ERROR in "$ERRORS"; do
+            echo "    `red ✖ Error:` $ERROR"
+        done
+        printf "\n\n\n"
+    fi
 fi
