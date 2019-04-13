@@ -1,145 +1,183 @@
 #! /bin/bash
 
-FILENAME=${0##*/}
-
-red() {   echo "`tput setaf 1`"$@"`tput setaf 7`" ; }
-green() { echo "`tput setaf 2`"$@"`tput setaf 7`" ; }
-cyan() {  echo "`tput setaf 6`"$@"`tput setaf 7`" ; }
+color() {
+    echo -n "`tput setaf $1`${@:2}"
+    # reset color if there are arguments:
+    if [[ "$#" > 1 ]]; then echo -n "`tput setaf 7`"; fi
+}
+red() { color 1 "$@"; }
+green() { color 2 "$@"; }
+cyan() { color 6 "$@"; }
+reset() { color 7 "$@"; }
 
 help() {
-echo "
-`green Usage:`
-    `cyan $FILENAME` <format> [options] <file1> [file2...]
+    echo "
+    `green Usage:`
+        `cyan $FILENAME` <format> [options] <file1> [file2...]
 
-`green Options:`
-    `cyan format`               Format to convert to.
-    `cyan --formats`            List all available formats.
-    `cyan -v, --verbose`        If you love logs.
-    `cyan -h, --help`           Show this help message.
+    `green Options:`
+        `cyan format`           Format to convert to.
+        `cyan --formats`        List all supported formats.
+        `cyan -v, --verbose`    If you love logs.
+        `cyan -h, --help`       Show this help message.
 
-    FFmpeg options are supported for audio/video formats (see $ ffmpeg -h).
-    ImageMagick options are supported for image formats (see $ man magick).
-    Long arguments need to be written with quotes (like \"-b:a 128k\")
-"
+        Video/audio formats support FFmpeg options (see $ ffmpeg -h).
+        Image formats support ImageMagick options (see $ man magick).
+        Long arguments must have quotes (like \"-b:a 128k\").
+    "
 }
 
-# if only 0 or 1 arguments
+list_formats() {
+    echo "
+    `green Video formats:`
+        `cyan mp4`    x
+        `cyan mov`    x
+        `cyan webm`   x
+        `cyan webm`   x
+
+    `green Audio formats:`
+        `cyan mp3`    Defaults to 320kbps
+        `cyan wav`    x
+        `cyan flac`   x
+        `cyan aac`    x
+        `cyan aiff`   x
+        `cyan ogg`    x
+
+    `green Image formats:`
+        `cyan jpg`    x
+        `cyan png`    x
+        `cyan webp`   x
+    "
+}
+
+FILENAME=${0##*/}
+ARGS=("$@")
+FORMAT="$1"
+CMD=ffmpeg
+# OPTIONS=()
+# NO_FORMAT=false
+# INVALID_FORMAT=false
+# HELP=false
+# LIST_FORMATS=false
+# VERBOSE=false
+# CUSTOM_OPTIONS=false
+# FILES=()
+# SKIPFILES=()
+
+# no args
 if [[ "$#" < 1 ]]; then help; exit 0; fi
 
-FORMAT=$1
-# remove format argument
-shift 1
+# format
 case "$FORMAT" in
     mp4|mov|webm)
-        CMD=ffmpeg
         ;;
-    mp3|wav|flac|aac|aiff|ogg)
-        CMD=ffmpeg
+    mp3)
+        OPTIONS+=("-b:a")
+        OPTIONS+=("320k")
+        ;;
+    wav|flac|aac|aiff|ogg)
         ;;
     jpg|png|webp)
         CMD=magick
         ;;
+    '')
+        NO_FORMAT=true
+        ;;
     *)
-        echo "`red Error:` Invalid format: $FORMAT"
-        exit 1
+        INVALID_FORMAT=true
         ;;
 esac
-VIDEO_FORMATS=("mp4", "mov", "webm")
-AUDIO_FORMATS=("mp3", "wav", "flac", "aac", "aiff", "ogg")
-IMAGE_FORMATS=("jpg", "png", "webp")
 
-# if only 0 or 1 arguments
-if [[ "$#" < 1 ]]; then help; exit 0; fi
-
-
-FILES=()
-VERBOSE_FLAG=false
-USER_OPTIONS=false
-OPTIONS=()
-SKIPFILES=()
-
-if [[ "$FORMAT" = "mp3" ]]; then
-    OPTIONS+=("-b:a")
-    OPTIONS+=("320k")
-fi
-
-# parse arguments
-while (( "$#" )); do
-    case "$1" in
+# parse args
+for (( i=1; i <= "$#"; i++ )); do
+    ARG="${!i}"
+    case "${!i}" in
         -h|--help)
-            help; exit 0
-            shift ;;
+            HELP=true
+            ;;
         --formats)
-            list_formats; exit 0
-            shift ;;
+            LIST_FORMATS=true
+            ;;
         -v|--verbose)
-            VERBOSE_FLAG=true
-            shift ;;
+            VERBOSE=true
+            ;;
+        -*)
+            CUSTOM_OPTIONS=true
+            OPTIONS+=("$1")
+            ;;
         *)
-            if [[ -f "$1" ]]; then
-                FILES+=("$1")
-            elif [[ "$1" == -* ]]; then
-                USER_OPTIONS=true
-                OPTIONS+=("$1")
+            # dont save file if arg is first (aka format)
+            if [[ $i == 1 ]]; then
+                :
+            elif [[ -f "$ARG" ]]; then # if file exists
+                FILES+=("$ARG")
             else
-                SKIPFILES+=("$1")
+                SKIPFILES+=("$ARG")
             fi
-            shift ;;
+            ;;
     esac
 done
 
-if [[ $CMD == "ffmpeg" && "$VERBOSE_FLAG" = false ]]; then
+if [[ $HELP == true ]]; then
+    help; exit 0
+elif [[ $LIST_FORMATS == true ]]; then
+    list_formats; exit 0
+elif [[ $NO_FORMAT == true ]]; then
+    echo "`red Error:` No format provided"; exit 1
+elif [[ $INVALID_FORMAT == true ]]; then
+    echo "`red Error:` Invalid format: $FORMAT"; exit 1
+elif [[ ${#SKIPFILES[@]} > 0 ]]; then
+    for SKIPFILE in "${SKIPFILES[@]}"; do
+        echo "`red Error:` Invalid argument or non-existant file: $SKIPFILE"
+    done
+    exit 1
+elif [[ ${#FILES[@]} == 0 ]]; then
+    echo "`red Error:` No files specified"; exit 1
+fi
+
+# verbose
+if [[ $CMD == "ffmpeg" && $VERBOSE != true ]]; then
     OPTIONS+=("-loglevel")
     OPTIONS+=("warning")
-elif [[ $CMD == "magick" && "$VERBOSE_FLAG" = true ]]; then
+elif [[ $CMD == "magick" && $VERBOSE == true ]]; then
     OPTIONS+=("-verbose")
 fi
 
-if [[ ${#FILES[@]} = 0 ]]; then
-    echo "`red Error:` No files specified"
-    help
-    exit 1
-elif [[ ! ${#SKIPFILES[@]} = 0 ]]; then
-    for SKIPFILE in "${SKIPFILES[@]}"; do
-        echo "`red Error:` File does not exist (Skipping) or invalid argument: $SKIPFILE"
-    done
-fi
-
-if [[ "$USER_OPTIONS" = true ]]; then
-    echo "Passing the following options to $CMD: ${OPTIONS[@]}"
+# custom options
+if [[ $CUSTOM_OPTIONS == true || $VERBOSE == true ]]; then
+    echo "Passing the following options to $CMD: `cyan "${OPTIONS[@]}"`"
 fi
 
 for FILE in "${FILES[@]}"; do
 
-    if [[ -f "$FILE" ]]; then # check if file exists
-        echo "Converting `cyan $FILE`"
-
-        FILENAME=$(basename "$FILE")
-        FILE_WITHOUT_EXT=${FILE%.*} # remove extension
-        # echo "FILENAME              $FILENAME"
-        # echo "TEMPDIR               $TEMPDIR"
-        NEW_FILE_WIP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
-        if [[ $CMD == "ffmpeg" ]]; then
-            ffmpeg -i "${FILE}" ${OPTIONS[@]} "$NEW_FILE_WIP" || { echo `red Error:` Convertion failed;  exit 1; }
-        else
-            magick ${OPTIONS[@]} "$FILE" "$NEW_FILE_WIP" || { echo `red Error:` Convertion failed;  exit 1; }
-        fi
-        
-        NEW_FILE="$FILE_WITHOUT_EXT converted.$FORMAT"
-        COUNT=1
-        while [[ -f "$NEW_FILE" ]]; do
-            if [[ -f "$NEW_FILE" ]]; then
-                # echo "FILE EXISTS       $NEW_FILE"
-                NEW_FILE="$FILE_WITHOUT_EXT converted ($COUNT).$FORMAT"
-                (( COUNT++ ))
-            else
-                # echo "FILE DOES NOT EXIST       $NEW_FILE"
-                break
-            fi
-        done
-        mv "$NEW_FILE_WIP" "$NEW_FILE"
-    else
-        echo "`red Error:` File no longer exists (Skipping): $FILE"
+    # if file does not exist
+    if [[ ! -f "$FILE" ]]; then
+        echo "`red Error:` File no longer exists (Skipping): `cyan"$FILE"`"
+        continue
     fi
+
+    echo "Converting `cyan $FILE`"
+
+    FILE_WITHOUT_EXT=${FILE%.*}
+    NEW_FILE_TEMP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
+
+    if [[ $CMD == "ffmpeg" ]]; then
+        ffmpeg -i "$FILE" ${OPTIONS[@]} "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+    else
+        magick ${OPTIONS[@]} "$FILE" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+    fi
+
+    COUNT=1
+    NEW_FILE="$FILE_WITHOUT_EXT converted.$FORMAT"
+    while [[ -f "$NEW_FILE" ]]; do
+        if [[ -f "$NEW_FILE" ]]; then
+            NEW_FILE="$FILE_WITHOUT_EXT converted ($COUNT).$FORMAT"
+            (( COUNT++ ))
+        else
+            break
+        fi
+    done
+
+    mv "$NEW_FILE_TEMP" "$NEW_FILE"
 
 done

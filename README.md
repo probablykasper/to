@@ -10,10 +10,10 @@ These are the basic bash scripts I've made for myself. They're made for macOS, s
 
 # Scripts
 
-### welp
+## welp
 Super simple script that lists the files in the same folder as the script is in. In other words, it lists the scripts here.
 
-### chill
+## chill
 Stops execution for a specified amount of time. Useful for scheduling stuff. `chill` shows the syntax:
 ```
 Syntax: chill #h
@@ -21,12 +21,12 @@ Syntax: chill #m
 Syntax: chill #h #m
 ```
 
-### d-c
+## d-c
 Basic wrapper around the `docker-compose` command (which you should have if you got Docker installed). The command works the same as `docker-compose`, except:
 - When running `d-c run`, it automatically adds the `--rm` argument
 - When running `d-c up`, it automatically runs `docker-compose down` afterwards.
 
-### render
+## render
 This will render [After Effects](https://www.adobe.com/products/aftereffects.html) projects, assuming you have After Effects installed in `/Applications/Adobe After Effects CC 2019` (Specifically, the `aerender` file needs to be in there). Running `render` shows the syntax:
 ```
 Syntax: render <path>
@@ -35,7 +35,7 @@ Syntax: render <path>
 ```
 It was made to be able to support multiple path arguments, as well as taking folders as path arguments to render every .aep file inside those folders, but I don't think that works. Might fix that someday if I need it.
 
-### reset-permissions
+## reset-permissions
 Resets permissions of a directory. You should probably know what you're doing before running this.
 
 Running `reset-permissions` shows the syntax:
@@ -51,10 +51,10 @@ sudo chown -R <USERNAME> <DIRECTORY> && \
 sudo chmod -R 755 <DIRECTORY>
 ```
 
-### sleepy
+## sleepy
 Hibernates your computer. I usually run this after `render` or `chill`.
 
-### to
+## to
 Requires [ImageMagick](https://imagemagick.org) for images and [FFmpeg](https://ffmpeg.org) for audio and video. I recommend installing them using [Brew](https://brew.sh) by running `brew install ffmpeg imagemagick`.
 
 Converts audio and video. Running `to` shows this help message:
@@ -63,16 +63,17 @@ Usage:
     to <format> [options] <file1> [file2...]
 
 Options:
-    format          File format extension to convert to.
-                      - mp3s default to 320kbps
-    -v, --verbose   If you love logs.
-    -h, --help      Show this help message.
-    
-    FFmpeg options are supported too (see ffmpeg -h). Long
-    arguments need to be written with quotes (like "-b:a 128k")
+    format           Format to convert to.
+    --formats        List all supported formats.
+    -v, --verbose    If you love logs.
+    -h, --help       Show this help message.
+
+    Video/audio formats support FFmpeg options (see $ ffmpeg -h).
+    Image formats support ImageMagick options (see $ man magick).
+    Long arguments must have quotes (like "-b:a 128k").
 ```
 
-### to-gif
+## to-gif
 Requires [ffmpeg](https://ffmpeg.org) (which I recommend installing using [Brew](https://brew.sh)).
 
 Converts videos into gifs. If you do this frequently I would probably use some app instead.
