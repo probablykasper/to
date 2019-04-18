@@ -33,7 +33,6 @@ list_formats() {
         `cyan mp4`    x
         `cyan mov`    x
         `cyan webm`   x
-        `cyan webm`   x
 
     `green Audio formats:`
         `cyan mp3`    Defaults to 320kbps
