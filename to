@@ -24,7 +24,7 @@ help() {
 
         Video/audio formats support FFmpeg options (see `yellow $ ffmpeg -h`).
         Image formats support ImageMagick options (see `yellow $ man magick`).
-        Long FFmpeg/ImageMagick arguments must have quotes (like \"-ac 128k\").
+        Long FFmpeg/ImageMagick need quotes, like `yellow \\"-ac 128k\\"`.
     "
 }
 
@@ -37,6 +37,7 @@ list_formats() {
 
     `green Audio formats:`
         `cyan mp3`          320kbps.
+        `yellow mp3:128`      Custom bitrate example. `yellow 128k` and `yellow 128kbps` works too.
         `cyan wav`
         `cyan flac`
         `cyan aac`
@@ -45,6 +46,7 @@ list_formats() {
 
     `green Image formats:`
         `cyan jpg`          Highest quality.
+        `yellow jpg:75`       Custom quality example. Value can be 0-100.
         `cyan jp2`          Highest quality.
         `cyan png`
         `cyan webp`
@@ -73,9 +75,6 @@ for (( i=1; i <= "$#"; i++ )); do
             VERBOSE=true
             ;;
         -*)
-            if [[ "$ARG" == "-b:a" ]]; then
-                AUDIO_BITRATE_CHANGED=true
-            fi
             CUSTOM_OPTIONS=true
             OPTIONS+=("$ARG")
             ;;
@@ -92,13 +91,25 @@ for (( i=1; i <= "$#"; i++ )); do
     esac
 done
 
+# check for changed default options
+changed_defaults() {
+    for ARG in "$@"; do
+        case "$ARG" in
+            "-b:a")
+                AUDIO_BITRATE_CHANGED=true
+                ;;
+        esac
+    done
+}
+changed_defaults ${OPTIONS[@]}
+
 # format
 case "$FORMAT" in
     mp4|mov|webm)
         ;;
     mp3)
         if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
-            OPTIONS+=("-b:a", "320k")
+            OPTIONS+=("-b:a" "320k")
         fi
         ;;
     wav|flac|aac|aiff|ogg)
