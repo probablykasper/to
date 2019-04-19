@@ -7,6 +7,7 @@ color() {
 }
 red() { color 1 "$@"; }
 green() { color 2 "$@"; }
+yellow() { color 3 "$@"; }
 cyan() { color 6 "$@"; }
 reset() { color 7 "$@"; }
 
@@ -21,31 +22,32 @@ help() {
         `cyan -v, --verbose`    If you love logs.
         `cyan -h, --help`       Show this help message.
 
-        Video/audio formats support FFmpeg options (see $ ffmpeg -h).
-        Image formats support ImageMagick options (see $ man magick).
-        Long arguments must have quotes (like \"-b:a 128k\").
+        Video/audio formats support FFmpeg options (see `yellow $ ffmpeg -h`).
+        Image formats support ImageMagick options (see `yellow $ man magick`).
+        Long FFmpeg/ImageMagick arguments must have quotes (like \"-ac 128k\").
     "
 }
 
 list_formats() {
     echo "
     `green Video formats:`
-        `cyan mp4`    x
-        `cyan mov`    x
-        `cyan webm`   x
+        `cyan mp4`
+        `cyan mov`
+        `cyan webm`
 
     `green Audio formats:`
-        `cyan mp3`    Defaults to 320kbps
-        `cyan wav`    x
-        `cyan flac`   x
-        `cyan aac`    x
-        `cyan aiff`   x
-        `cyan ogg`    x
+        `cyan mp3`          320kbps.
+        `cyan wav`
+        `cyan flac`
+        `cyan aac`
+        `cyan aiff`
+        `cyan ogg`
 
     `green Image formats:`
-        `cyan jpg`    x
-        `cyan png`    x
-        `cyan webp`   x
+        `cyan jpg`          Highest quality.
+        `cyan jp2`          Highest quality.
+        `cyan png`
+        `cyan webp`
     "
 }
 
@@ -53,15 +55,6 @@ FILENAME=${0##*/}
 ARGS=("$@")
 FORMAT="$1"
 CMD=ffmpeg
-# OPTIONS=()
-# NO_FORMAT=false
-# INVALID_FORMAT=false
-# HELP=false
-# LIST_FORMATS=false
-# VERBOSE=false
-# CUSTOM_OPTIONS=false
-# FILES=()
-# SKIPFILES=()
 
 # no args
 if [[ "$#" < 1 ]]; then help; exit 0; fi
@@ -155,7 +148,7 @@ for FILE in "${FILES[@]}"; do
         continue
     fi
 
-    echo "Converting `cyan $FILE`"
+    echo "Converting to $FORMAT: `cyan $FILE`"
 
     FILE_WITHOUT_EXT=${FILE%.*}
     NEW_FILE_TEMP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
