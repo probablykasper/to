@@ -59,27 +59,6 @@ CMD=ffmpeg
 # no args
 if [[ "$#" < 1 ]]; then help; exit 0; fi
 
-# format
-case "$FORMAT" in
-    mp4|mov|webm)
-        ;;
-    mp3)
-        OPTIONS+=("-b:a")
-        OPTIONS+=("320k")
-        ;;
-    wav|flac|aac|aiff|ogg)
-        ;;
-    jpg|png|webp)
-        CMD=magick
-        ;;
-    '')
-        NO_FORMAT=true
-        ;;
-    *)
-        INVALID_FORMAT=true
-        ;;
-esac
-
 # parse args
 for (( i=1; i <= "$#"; i++ )); do
     ARG="${!i}"
@@ -94,6 +73,9 @@ for (( i=1; i <= "$#"; i++ )); do
             VERBOSE=true
             ;;
         -*)
+            if [[ "$ARG" == "-b:a" ]]; then
+                AUDIO_BITRATE_CHANGED=true
+            fi
             CUSTOM_OPTIONS=true
             OPTIONS+=("$ARG")
             ;;
@@ -109,6 +91,28 @@ for (( i=1; i <= "$#"; i++ )); do
             ;;
     esac
 done
+
+# format
+case "$FORMAT" in
+    mp4|mov|webm)
+        ;;
+    mp3)
+        if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
+            OPTIONS+=("-b:a", "320k")
+        fi
+        ;;
+    wav|flac|aac|aiff|ogg)
+        ;;
+    jpg|png|webp)
+        CMD=magick
+        ;;
+    '')
+        NO_FORMAT=true
+        ;;
+    *)
+        INVALID_FORMAT=true
+        ;;
+esac
 
 if [[ $HELP == true ]]; then
     help; exit 0
