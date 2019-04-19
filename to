@@ -36,9 +36,7 @@ list_formats() {
         `cyan webm`
 
     `green Audio formats:`
-        `cyan mp3`          320kbps.
-        `yellow mp3:128`      Custom bitrate example. `yellow 128k` and `yellow 128kbps` works too.
-        `cyan wav`
+        `cyan mp3`      320kbps. Custom bitrate example: `yellow mp3:128`
         `cyan flac`
         `cyan aac`
         `cyan aiff`
@@ -114,6 +112,18 @@ case "$FORMAT" in
         if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
             OPTIONS+=("-b:a" "320k")
         fi
+        ;;
+    mp3:*)
+        MP3_REGEX="^(mp3)(:|-|\/)([0-9]{1,3})(k|kbps)?$"
+        if [[ "$FORMAT" =~ $MP3_REGEX ]]; then
+            FORMAT="${BASH_REMATCH[1]}"
+            if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
+                OPTIONS+=("-b:a", "${BASH_REMATCH[3]}k")
+            fi
+        else
+            INVALID_FORMAT=true
+        fi
+
         ;;
     wav|flac|aac|aiff|ogg)
         ;;
