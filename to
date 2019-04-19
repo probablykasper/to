@@ -24,7 +24,7 @@ help() {
 
         Video/audio formats support FFmpeg options (see `yellow $ ffmpeg -h`).
         Image formats support ImageMagick options (see `yellow $ man magick`).
-        Long FFmpeg/ImageMagick need quotes, like `yellow \\"-ac 128k\\"`.
+        Long FFmpeg/ImageMagick arguments need quotes, like `yellow \\"-ac 128k\\"`.
     "
 }
 
@@ -98,6 +98,9 @@ changed_defaults() {
             "-b:a")
                 AUDIO_BITRATE_CHANGED=true
                 ;;
+            "-loglevel")
+                LOGLEVEL_CHANGED=true
+                ;;
         esac
     done
 }
@@ -143,9 +146,8 @@ elif [[ ${#FILES[@]} == 0 ]]; then
 fi
 
 # verbose
-if [[ $CMD == "ffmpeg" && $VERBOSE != true ]]; then
-    OPTIONS+=("-loglevel")
-    OPTIONS+=("warning")
+if [[ $CMD == "ffmpeg" && $VERBOSE != true && $LOGLEVEL_CHANGED != true ]]; then
+    OPTIONS+=("-loglevel" "warning")
 elif [[ $CMD == "magick" && $VERBOSE == true ]]; then
     OPTIONS+=("-verbose")
 fi
