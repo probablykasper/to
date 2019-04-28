@@ -3,9 +3,12 @@
 Pretty simple bash script that converts audio, video and image files using [FFmpeg](https://ffmpeg.org) and [ImageMagick](https://imagemagick.org).
 
 # Install
-TBA
+Get [Homebrew](https://brew.sh/) if you don't already, and run this command:
+```
+brew install spectralkh/tap/to
+```
 
-## Usage
+# Usage
 Running `to` shows the help message:
 ```
 Usage:
@@ -22,7 +25,7 @@ Options:
     Long FFmpeg/ImageMagick arguments need quotes, like "-ac 128k".
 ```
 
-## Formats
+# Formats
 Running `to` shows the supported formats:
 ```
 Video formats:
@@ -43,3 +46,18 @@ Image formats:
     png
     webp
 ```
+
+# Dev Instructions
+
+If you're just interested in the `to` script, you can steal that from `bin/to`.
+
+If you want to publish your own version to Homebrew, you have to create your own "tap" with a "formula" for this script. You may want to Google how all that works.
+
+My tap can be found [here](http://github.com/spectralkh/homebrew-tap).
+
+### Create the tarball for the Homebrew formula
+```git archive HEAD -o dist/to-<VERSION>.tar.gz```
+The url for your formula will then be `https://github.com/<USER>/<REPO>/raw/master/dist/to-1.0.0.tar.gz`
+
+### Generate the SHA256 for the Homebrew formula
+```brew fetch ./Formula/to.rb```
