@@ -41,8 +41,8 @@ Audio formats:
     ogg
 
 Image formats:
-    jpg      100 quality. Custom quality example: jpg:75 (0-100)
-    jp2      100 quality. Custom quality example: jpg:75 (0-100)
+    jpg      95 quality. Custom quality example: jpg:75 (0-100)
+    jp2      95 quality. Custom quality example: jpg:75 (0-100)
     png
     webp
 ```
