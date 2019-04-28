@@ -126,6 +126,9 @@ case "$FORMAT" in
             INVALID_FORMAT=true
         fi
         ;;
+    png)
+        CMD=magick
+        ;;
     jpg|jp2)
         CMD=magick
         if [[ $QUALITY_CHANGED != true ]]; then
