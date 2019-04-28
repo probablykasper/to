@@ -141,7 +141,7 @@ case "$FORMAT" in
         if [[ "$FORMAT" =~ $JPG_JP2_REGEX ]]; then
             FORMAT="${BASH_REMATCH[1]}"
             if [[ $QUALITY_CHANGED != true ]]; then
-                OPTIONS+=("-quality", "${BASH_REMATCH[3]}k")
+                OPTIONS+=("-quality" "${BASH_REMATCH[3]}")
             fi
         else
             INVALID_FORMAT=true
