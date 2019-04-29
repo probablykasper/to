@@ -6,7 +6,7 @@ Pretty simple bash script that converts audio, video and image files using [FFmp
 Get [Homebrew](https://brew.sh/) if you don't already, and run this command:
 ```
 brew tap spectralkh/tap
-brew install to
+brew cask install to
 ```
 
 # Usage
@@ -52,13 +52,21 @@ Image formats:
 
 If you're just interested in the `to` script, you can steal that from `bin/to`.
 
-If you want to publish your own version to Homebrew, you have to create your own "tap" with a "formula" for this script. You may want to Google how all that works.
+## Publishing to Homebrew
 
-My tap can be found [here](http://github.com/spectralkh/homebrew-tap).
+If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works.
 
-### Create the tarball for the Homebrew formula
-```git archive HEAD -o dist/to-<VERSION>.tar.gz```
-The url for your formula will then be `https://github.com/<USER>/<REPO>/raw/master/dist/to-1.0.0.tar.gz`
+For reference, my tap can be found [here](http://github.com/spectralkh/homebrew-tap).
 
-### Generate the SHA256 for the Homebrew formula
-```brew fetch ./Formula/to.rb```
+### url
+Your cask file needs a url pointing to a tarball. You can create the tarball by running the following in your repository:
+```
+git archive HEAD -o dist/to-VERSION.tar.gz
+```
+Your url should then be `https://github.com/USER/REPO/raw/master/dist/to-VERSION.tar.gz` (with your own USER/REPO/VERSION, of course).
+
+### sha256
+After putting a url in your cask file, you need a sha256 string too. Homebrew will generate it for you when you run this inside your tap repository:
+```
+brew fetch ./Casks/to.rb
+```
