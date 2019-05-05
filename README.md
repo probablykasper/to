@@ -43,9 +43,9 @@ Audio formats:
 
 Image formats:
     jpg      95 quality. Custom quality example: jpg:75 (0-100)
-    jp2      95 quality. Custom quality example: jpg:75 (0-100)
+    jp2      95 quality. Custom quality example: jp2:75 (0-100)
     png
-    webp
+    webp     95 quality. Custom quality example: webp:75 (0-100)
 ```
 
 # Dev Instructions
