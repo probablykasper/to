@@ -200,7 +200,7 @@ for FILE in "${FILES[@]}"; do
     if [[ $CMD == "ffmpeg" ]]; then
         ffmpeg -i "$FILE" ${OPTIONS[@]} "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
     else
-        magick ${OPTIONS[@]} "$FILE" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+        magick ${OPTIONS[@]} "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
     fi
 
     COUNT=1
