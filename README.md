@@ -21,9 +21,8 @@ Options:
     -v, --verbose    If you love logs.
     -h, --help       Show this help message.
 
-    Video/audio formats support FFmpeg options (see $ ffmpeg -h).
-    Image formats support ImageMagick options (see $ man magick).
-    Long FFmpeg/ImageMagick arguments need quotes, like "-ac 128k".
+    Prefix arguments with - to pass them directly to
+    FFmpeg or ImageMagick, like --ac -128k.
 ```
 
 # Formats

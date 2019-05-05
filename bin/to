@@ -22,9 +22,8 @@ help() {
         `cyan -v, --verbose`    If you love logs.
         `cyan -h, --help`       Show this help message.
 
-        Video/audio formats support FFmpeg options (see `yellow $ ffmpeg -h`).
-        Image formats support ImageMagick options (see `yellow $ man magick`).
-        Long FFmpeg/ImageMagick arguments need quotes, like `yellow \\"-ac 128k\\"`.
+        Prefix arguments with `yellow -` to pass them directly to
+        FFmpeg or ImageMagick, like `yellow --ac -128k`.
     "
 }
 
@@ -73,7 +72,7 @@ for (( i=1; i <= "$#"; i++ )); do
             ;;
         -*)
             CUSTOM_OPTIONS=true
-            OPTIONS+=("$ARG")
+            OPTIONS+=("${ARG#?}")
             ;;
         *)
             # dont save file if arg is first (aka format)
@@ -198,9 +197,9 @@ for FILE in "${FILES[@]}"; do
     NEW_FILE_TEMP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
 
     if [[ $CMD == "ffmpeg" ]]; then
-        ffmpeg -i "$FILE" ${OPTIONS[@]} "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
-    else
-        magick ${OPTIONS[@]} "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+    elif [[ $CMD == "magick" ]]; then
+        magick "${OPTIONS[@]}" "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
     fi
 
     COUNT=1
