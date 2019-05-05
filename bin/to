@@ -46,6 +46,7 @@ list_formats() {
         `cyan jp2`      95 quality. Custom quality example: `yellow jp2:75` (0-100)
         `cyan png`
         `cyan webp`     95 quality. Custom quality example: `yellow webp:75` (0-100)
+        `cyan gif`
     "
 }
 
@@ -100,6 +101,9 @@ changed_defaults() {
             "-loglevel")
                 LOGLEVEL_CHANGED=true
                 ;;
+            "-filter_complex")
+                FILTER_COMPLEX_CHANGED=true
+                ;;
         esac
     done
 }
@@ -144,6 +148,13 @@ case "$FORMAT" in
             fi
         else
             INVALID_FORMAT=true
+        fi
+        ;;
+    gif)
+        CMD=gif
+        if [[ $FILTER_COMPLEX_CHANGED != true ]]; then
+            OPTIONS+=("-filter_complex")
+            OPTIONS+=("[0:v] fps=15,scale=480:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse")
         fi
         ;;
     '')
@@ -200,6 +211,8 @@ for FILE in "${FILES[@]}"; do
         ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
     elif [[ $CMD == "magick" ]]; then
         magick "${OPTIONS[@]}" "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+    elif [[ $CMD == "gif" ]]; then
+        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
     fi
 
     COUNT=1
