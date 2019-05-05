@@ -67,5 +67,5 @@ Your url should then be `https://github.com/USER/REPO/raw/master/dist/to-VERSION
 ### sha256
 After putting a url in your cask file, you need a sha256 string too. Homebrew will generate it for you when you run this inside your tap repository:
 ```
-brew fetch ./Casks/to.rb
+brew cask fetch ./Casks/to.rb
 ```
