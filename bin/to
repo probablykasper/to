@@ -102,6 +102,9 @@ changed_defaults() {
             "-loglevel")
                 LOGLEVEL_CHANGED=true
                 ;;
+            "-265-params")
+                X256_PARAMS_CHANGED=true
+                ;;
             "-filter_complex")
                 FILTER_COMPLEX_CHANGED=true
                 ;;
@@ -118,6 +121,7 @@ case "$FORMAT" in
         if [[ $FORMAT == "mp4-h265" ]]; then
             OPTIONS+=("-c:v" "libx265")
             OPTIONS+=("-vtag" "hvc1")
+            ENCODER="x265"
         else
             OPTIONS+=("-c:v" "libx264")
         fi
@@ -199,6 +203,9 @@ fi
 # verbose
 if [[ $CMD == "ffmpeg" && $VERBOSE != true && $LOGLEVEL_CHANGED != true ]]; then
     OPTIONS+=("-loglevel" "warning")
+    if [[ $ENCODER == "x265" && $X256_PARAMS_CHANGED != true ]]; then
+        OPTIONS+=("-x265-params" "log-level=warning")
+    fi
 elif [[ $CMD == "magick" && $VERBOSE == true ]]; then
     OPTIONS+=("-verbose")
 fi
