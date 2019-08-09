@@ -49,8 +49,6 @@ Image formats:
 
 # Dev Instructions
 
-If you're just interested in the `to` script, you can steal that from `bin/to`.
-
 ## Publishing to Homebrew
 
 If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works.
