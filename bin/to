@@ -105,6 +105,9 @@ changed_defaults() {
             "-265-params")
                 X256_PARAMS_CHANGED=true
                 ;;
+            "-nostat")
+                STAT_DISABLED=true
+                ;;
             "-filter_complex")
                 FILTER_COMPLEX_CHANGED=true
                 ;;
@@ -203,6 +206,7 @@ fi
 # verbose
 if [[ $CMD == "ffmpeg" && $VERBOSE != true && $LOGLEVEL_CHANGED != true ]]; then
     OPTIONS+=("-loglevel" "warning")
+    OPTIONS+=("-stats") # print progress
     if [[ $ENCODER == "x265" && $X256_PARAMS_CHANGED != true ]]; then
         OPTIONS+=("-x265-params" "log-level=warning")
     fi
@@ -229,11 +233,16 @@ for FILE in "${FILES[@]}"; do
     NEW_FILE_TEMP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
 
     if [[ $CMD == "ffmpeg" ]]; then
-        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
     elif [[ $CMD == "magick" ]]; then
-        magick "${OPTIONS[@]}" "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+        magick "${OPTIONS[@]}" "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
     elif [[ $CMD == "gif" ]]; then
-        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Convertion failed;  exit 1; }
+        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
+    fi
+
+    # clear ffmpeg progress output
+    if [[ $CMD == "ffmpeg" && $VERBOSE != true && $LOGLEVEL_CHANGED != true ]]; then
+        tput cuu 1 && tput el # go up one line and clear the line
     fi
 
     COUNT=1
