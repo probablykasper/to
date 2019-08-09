@@ -31,21 +31,22 @@ list_formats() {
     echo "
     `green Video formats:`
         `cyan mp4`
+        `cyan mp4-h265`
         `cyan mov`
         `cyan webm`
 
     `green Audio formats:`
-        `cyan mp3`      320kbps. Custom bitrate example: `yellow mp3:128`
+        `cyan mp3`      320kbps. Custom bitrate example: `cyan mp3:128`
         `cyan flac`
         `cyan aac`
         `cyan aiff`
         `cyan ogg`
 
     `green Image formats:`
-        `cyan jpg`      95 quality. Custom quality example: `yellow jpg:75` (0-100)
-        `cyan jp2`      95 quality. Custom quality example: `yellow jp2:75` (0-100)
+        `cyan jpg`      95 quality. Custom quality example: `cyan jpg:75` (0-100)
+        `cyan jp2`      95 quality. Custom quality example: `cyan jp2:75` (0-100)
         `cyan png`
-        `cyan webp`     95 quality. Custom quality example: `yellow webp:75` (0-100)
+        `cyan webp`     95 quality. Custom quality example: `cyan webp:75` (0-100)
         `cyan gif`
     "
 }
@@ -111,7 +112,20 @@ changed_defaults ${OPTIONS[@]}
 
 # format
 case "$FORMAT" in
-    mp4|mov|webm|wav|flac|aac|aiff|ogg)
+    mov|webm|wav|flac|aac|aiff|ogg)
+        ;;
+    mp4|mp4-h264)
+        OPTIONS+=("-c:v" "libx264")
+        ;;
+    mp4-h265)
+        OPTIONS+=("-c:v" "libx265")
+        OPTIONS+=("-vtag" "hvc1")
+        ;;
+    mp4|mp4-h264|mp4-h265)
+        OPTIONS+=("-crf" "28")
+        OPTIONS+=("-c:a" "aac")
+        OPTIONS+=("-b:a" "256k")
+        OPTIONS+=("-preset" "medium")
         ;;
     mp3)
         if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
