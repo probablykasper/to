@@ -124,11 +124,12 @@ case "$FORMAT" in
             OPTIONS+=("-c:v" "libx265")
             OPTIONS+=("-vtag" "hvc1")
             ENCODER="x265"
+            OPTIONS+=("-crf" "20") # according to ffmpeg, x265 CRF 28 visually corresponds to about x264 CRF 23
         else
             OPTIONS+=("-c:v" "libx264")
+            OPTIONS+=("-crf" "17")
         fi
         FORMAT="mp4"
-        OPTIONS+=("-crf" "28")
         OPTIONS+=("-c:a" "aac")
         OPTIONS+=("-b:a" "256k")
         OPTIONS+=("-preset" "medium")
