@@ -1,3 +1,6 @@
+## 1.3.1 - 2019 Aug 10
+- Fixed mp4 quality
+
 ## 1.3.0 - 2019 Aug 10
 - Added mp4-h265
 - ffmpeg progress will now be shown while converting
