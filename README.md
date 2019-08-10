@@ -30,13 +30,13 @@ Running `to` shows the supported formats:
 ```
 Video formats:
     mp4
+    mp4-h265
     mov
     webm
 
 Audio formats:
     mp3      320kbps. Custom bitrate example: mp3:128
     flac
-    aac
     aiff
     ogg
 
@@ -45,6 +45,7 @@ Image formats:
     jp2      95 quality. Custom quality example: jp2:75 (0-100)
     png
     webp     95 quality. Custom quality example: webp:75 (0-100)
+    gif
 ```
 
 # Dev Instructions
