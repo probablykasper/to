@@ -5,8 +5,7 @@ Pretty simple bash script that converts audio, video and image files using [FFmp
 # Install
 Get [Homebrew](https://brew.sh/) if you don't already, and run this command:
 ```
-brew tap probablykasper/tap
-brew cask install to
+brew cask install probablykasper/tap/to
 ```
 
 # Usage
@@ -54,7 +53,7 @@ Image formats:
 
 If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works.
 
-For reference, my tap can be found [here](http://github.com/spectralkh/homebrew-tap).
+For reference, my tap can be found [here](http://github.com/probablykasper/homebrew-tap).
 
 ### url
 Your cask file needs a url pointing to a tarball. You can create the tarball by running the following in your repository:
