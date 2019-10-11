@@ -5,7 +5,7 @@ Pretty simple bash script that converts audio, video and image files using [FFmp
 # Install
 Get [Homebrew](https://brew.sh/) if you don't already, and run this command:
 ```
-brew tap spectralkh/tap
+brew tap probablykasper/tap
 brew cask install to
 ```
 
