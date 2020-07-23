@@ -49,21 +49,21 @@ Image formats:
 
 # Dev Instructions
 
-## Publishing to Homebrew
+## Release new version
 
-If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works.
+If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works. For reference, my tap can be found [here](http://github.com/probablykasper/homebrew-tap).
 
-For reference, my tap can be found [here](http://github.com/probablykasper/homebrew-tap).
-
-### url
-Your cask file needs a url pointing to a tarball. You can create the tarball by running the following in your repository:
-```
-git archive HEAD -o dist/to-VERSION.tar.gz
-```
-Your url should then be `https://github.com/USER/REPO/raw/master/dist/to-VERSION.tar.gz` (with your own USER/REPO/VERSION, of course).
-
-### sha256
-After putting a url in your cask file, you need a sha256 string too. Homebrew will generate it for you when you run this inside your tap repository:
-```
-brew cask fetch ./Casks/to.rb
-```
+1. Add release notes to `CHANGELOG.md`
+2. Create a tarball of your repo by running the following:
+    ```
+    git archive HEAD -o dist/to-VERSION.tar.gz
+    ```
+3. Push to the repo
+4. Create a GitHub release with the release notes and attach the tarball
+5. Your cask file needs a url pointing to the tarball.
+    
+    The url should be in this format: `https://github.com/USER/REPO/raw/master/dist/to-VERSION.tar.gz`
+6. After putting a url in your cask file, you need a sha256 string. Homebrew will geenrate it for you when you run this inside your tap repo:
+    ```
+    brew cask fetch ./Casks/to.rb
+    ```
