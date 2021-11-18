@@ -42,10 +42,10 @@ list_formats() {
         `cyan ogg`
 
     `green Image formats:`
-        `cyan jpg`      95 quality. Custom quality example: `cyan jpg:75` (0-100)
-        `cyan jp2`      95 quality. Custom quality example: `cyan jp2:75` (0-100)
+        `cyan jpg`      90 quality. Custom quality example: `cyan jpg:75` (0-100)
+        `cyan jp2`      90 quality. Custom quality example: `cyan jp2:75` (0-100)
         `cyan png`
-        `cyan webp`     95 quality. Custom quality example: `cyan webp:75` (0-100)
+        `cyan webp`     90 quality. Custom quality example: `cyan webp:75` (0-100)
         `cyan gif`
     "
 }
@@ -156,7 +156,7 @@ case "$FORMAT" in
     jpg|jp2|webp)
         CMD=magick
         if [[ $QUALITY_CHANGED != true ]]; then
-            OPTIONS+=("-quality" "95")
+            OPTIONS+=("-quality" "90")
         fi
         ;;
     jpg:*|jp2:*|webp:*)
