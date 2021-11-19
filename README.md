@@ -53,16 +53,10 @@ Image formats:
 
 If you want to publish to Homebrew, you can create your own "tap" repository with a "cask" file for this script. You may want to Google how all that works. For reference, my tap can be found [here](http://github.com/probablykasper/homebrew-tap).
 
-1. Create a tarball of your repo by running the following:
+1. Update `CHANGELOG.md`
+2. Create a git tag + GitHub release with the release notes
+3. Update the cask's `url` to be the archive of the latest tag. This URL will be in this format: `https://github.com/USER/REPO/archive/refs/tags/VERSION.tar.gz`
+4. Update the `sha256`. Once you have the url updated, you can let Homebrew generate it for you by running this inside your tap repo:
     ```
-    git archive HEAD -o dist/to-VERSION.tar.gz
+    brew fetch --cask ./Casks/to.rb
     ```
-2. Create a GitHub release with the release notes and attach the tarball
-3. Your cask file needs a url pointing to the tarball.
-
-    The url should be in this format: `https://github.com/USER/REPO/raw/master/dist/to-VERSION.tar.gz`
-4. After putting a url in your cask file, you need a sha256 string. Homebrew will geenrate it for you when you run this inside your tap repo:
-    ```
-    brew cask fetch ./Casks/to.rb
-    ```
-5. Update `CHANGELOG.md`
