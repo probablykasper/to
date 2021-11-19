@@ -1,3 +1,6 @@
+## 1.4.0 - 2021 Nov 19
+- Change image quality default from 95 to 90
+
 ## 1.3.1 - 2019 Aug 10
 - Fixed mp4 quality
 
