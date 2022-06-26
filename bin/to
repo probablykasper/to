@@ -43,7 +43,6 @@ list_formats() {
 
     `green Image formats:`
         `cyan jpg`      90 quality. Custom quality example: `cyan jpg:75` (0-100)
-        `cyan jp2`      90 quality. Custom quality example: `cyan jp2:75` (0-100)
         `cyan png`
         `cyan webp`     90 quality. Custom quality example: `cyan webp:75` (0-100)
         `cyan gif`
@@ -153,15 +152,15 @@ case "$FORMAT" in
     png)
         CMD=magick
         ;;
-    jpg|jp2|webp)
+    jpg|webp)
         CMD=magick
         if [[ $QUALITY_CHANGED != true ]]; then
             OPTIONS+=("-quality" "90")
         fi
         ;;
-    jpg:*|jp2:*|webp:*)
+    jpg:*|webp:*)
         CMD=magick
-        REGEX="^(jpg|jp2|webp)(:|-|\/)?([0-9]{1,3})(%)?$"
+        REGEX="^(jpg|webp)(:|-|\/)?([0-9]{1,3})(%)?$"
         if [[ "$FORMAT" =~ $REGEX ]]; then
             FORMAT="${BASH_REMATCH[1]}"
             if [[ $QUALITY_CHANGED != true ]]; then
