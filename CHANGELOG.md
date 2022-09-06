@@ -1,5 +1,7 @@
 ## Next
 - Remove jp2
+- Remove ogg
+- Add opus with custom quality support
 
 ## 1.4.0 - 2021 Nov 19
 - Change image quality default from 95 to 90

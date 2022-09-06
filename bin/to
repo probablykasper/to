@@ -39,7 +39,7 @@ list_formats() {
         `cyan mp3`      320kbps. Custom bitrate example: `cyan mp3:128`
         `cyan flac`
         `cyan aiff`
-        `cyan opus`
+        `cyan opus`     256kbps. Custom bitrate example: `cyan opus:128`
 
     `green Image formats:`
         `cyan jpg`      90 quality. Custom quality example: `cyan jpg:75` (0-100)
@@ -116,7 +116,7 @@ changed_defaults ${OPTIONS[@]}
 
 # format
 case "$FORMAT" in
-    mov|webm|wav|flac|aiff|opus)
+    mov|webm|wav|flac|aiff)
         ;;
     mp4|mp4-h264|mp4-h265)
         if [[ $FORMAT == "mp4-h265" ]]; then
@@ -133,17 +133,22 @@ case "$FORMAT" in
         OPTIONS+=("-b:a" "256k")
         OPTIONS+=("-preset" "medium")
         ;;
+    opus)
+        if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
+            OPTIONS+=("-b:a" "256k")
+        fi
+        ;;
     mp3)
         if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
             OPTIONS+=("-b:a" "320k")
         fi
         ;;
-    mp3:*)
-        MP3_REGEX="^(mp3)(:|-|\/)([0-9]{1,3})(k|kbps)?$"
-        if [[ "$FORMAT" =~ $MP3_REGEX ]]; then
+    mp3:*|opus:*)
+        REGEX="^(mp3|opus)(:|-|\/)([0-9]{1,3})(k|kbps)?$"
+        if [[ "$FORMAT" =~ $REGEX ]]; then
             FORMAT="${BASH_REMATCH[1]}"
             if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
-                OPTIONS+=("-b:a", "${BASH_REMATCH[3]}k")
+                OPTIONS+=("-b:a" "${BASH_REMATCH[3]}k")
             fi
         else
             INVALID_FORMAT=true

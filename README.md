@@ -37,7 +37,7 @@ Audio formats:
     mp3      320kbps. Custom bitrate example: mp3:128
     flac
     aiff
-    ogg
+    opus     256kbps. Custom bitrate example: opus:128
 
 Image formats:
     jpg      90 quality. Custom quality example: jpg:75 (0-100)
