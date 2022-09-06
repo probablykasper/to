@@ -39,7 +39,7 @@ list_formats() {
         `cyan mp3`      320kbps. Custom bitrate example: `cyan mp3:128`
         `cyan flac`
         `cyan aiff`
-        `cyan ogg`
+        `cyan opus`
 
     `green Image formats:`
         `cyan jpg`      90 quality. Custom quality example: `cyan jpg:75` (0-100)
@@ -116,7 +116,7 @@ changed_defaults ${OPTIONS[@]}
 
 # format
 case "$FORMAT" in
-    mov|webm|wav|flac|aiff|ogg)
+    mov|webm|wav|flac|aiff|opus)
         ;;
     mp4|mp4-h264|mp4-h265)
         if [[ $FORMAT == "mp4-h265" ]]; then
