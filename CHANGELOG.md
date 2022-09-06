@@ -1,4 +1,6 @@
-## Next
+# Changelog
+
+## 1.5.0 - 2022 Sep 6
 - Remove jp2
 - Remove ogg
 - Add opus with custom quality support
