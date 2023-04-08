@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.2 - 2023 Apr 8
+- Fix bad substitution
+
 ## 1.5.1 - 2023 Apr 8
 - Fix error in shells without color support
 
