@@ -1,9 +1,9 @@
-#! /bin/bash
+#! /bin/zsh
 
 color() {
-    echo -n "`tput setaf $1`${@:2}"
-    # reset color if there are arguments:
-    if [[ "$#" > 1 ]]; then tput sgr0; fi
+    [[ -n "$TERM" ]] && tput setaf "$1"
+    echo -n "${@:2}"
+    [[ -n "$TERM" ]] && tput sgr0
 }
 red() { color 1 "$@"; }
 green() { color 2 "$@"; }

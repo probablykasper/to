@@ -1,5 +1,8 @@
 # Changelog
 
+## Next
+- Fix error in shells without color support
+
 ## 1.5.0 - 2022 Sep 6
 - Remove jp2
 - Remove ogg
