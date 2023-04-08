@@ -1,6 +1,6 @@
 # Changelog
 
-## Next
+## 1.5.1 - 2023 Apr 8
 - Fix error in shells without color support
 
 ## 1.5.0 - 2022 Sep 6
