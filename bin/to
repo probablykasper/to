@@ -241,7 +241,6 @@ for FILE in "${FILES[@]}"; do
             echo Command: `green magick"$OPTIONS_ECHO" "$FILE_ECHO""[0]" "$NEW_FILE_ECHO"`
         fi
     fi
-    exit
 
     if [[ $CMD == "ffmpeg" ]]; then
         ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.4 - 2023 Jul 29
+- Fix conversion
+
 ## 1.5.3 - 2023 Jul 29
 - Fix custom quality formats
 
