@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.3 - 2023 Jul 29
+- Fix custom quality formats
+
 ## 1.5.2 - 2023 Apr 8
 - Fix bad substitution
 

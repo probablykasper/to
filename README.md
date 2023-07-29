@@ -54,8 +54,8 @@ If you want to publish to Homebrew, you can create your own "tap" repository wit
 
 1. Update `CHANGELOG.md`
 2. Create a git tag + GitHub release with the release notes
-3. Update the cask's `url` to be the archive of the latest tag. This URL will be in this format: `https://github.com/USER/REPO/archive/refs/tags/VERSION.tar.gz`
+3. Update the formula's `url` to be the archive of the latest tag. This URL will be in this format: `https://github.com/USER/REPO/archive/refs/tags/VERSION.tar.gz`
 4. Update the `sha256`. Once you have the url updated, you can let Homebrew generate it for you by running this inside your tap repo:
     ```
-    brew fetch --formula ./Casks/to.rb
+    brew fetch --formula ./Formula/to.rb
     ```

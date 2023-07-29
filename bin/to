@@ -144,9 +144,9 @@ case "$FORMAT" in
     mp3:*|opus:*)
         REGEX="^(mp3|opus)(:|-|\/)([0-9]{1,3})(k|kbps)?$"
         if [[ "$FORMAT" =~ $REGEX ]]; then
-            FORMAT="${BASH_REMATCH[1]}"
+            FORMAT="${match[1]}"
             if [[ $AUDIO_BITRATE_CHANGED != true ]]; then
-                OPTIONS+=("-b:a" "${BASH_REMATCH[3]}k")
+                OPTIONS+=("-b:a" "${match[3]}k")
             fi
         else
             INVALID_FORMAT=true
@@ -165,16 +165,16 @@ case "$FORMAT" in
         CMD=magick
         REGEX="^(jpg|webp)(:|-|\/)?([0-9]{1,3})(%)?$"
         if [[ "$FORMAT" =~ $REGEX ]]; then
-            FORMAT="${BASH_REMATCH[1]}"
+            FORMAT="${match[1]}"
             if [[ $QUALITY_CHANGED != true ]]; then
-                OPTIONS+=("-quality" "${BASH_REMATCH[3]}")
+                OPTIONS+=("-quality" "${match[3]}")
             fi
         else
             INVALID_FORMAT=true
         fi
         ;;
     gif)
-        CMD=gif
+        CMD=ffmpeg
         if [[ $FILTER_COMPLEX_CHANGED != true ]]; then
             OPTIONS+=("-filter_complex")
             OPTIONS+=("[0:v] fps=15,scale=480:-1,split [a][b];[a] palettegen [p];[b][p] paletteuse")
@@ -216,11 +216,6 @@ elif [[ $CMD == "magick" && $VERBOSE == true ]]; then
     OPTIONS+=("-verbose")
 fi
 
-# custom options
-if [[ $CUSTOM_OPTIONS == true || $VERBOSE == true ]]; then
-    echo "Passing the following options to $CMD: `cyan "${OPTIONS[@]}"`"
-fi
-
 for FILE in "${FILES[@]}"; do
 
     # if file does not exist
@@ -229,17 +224,29 @@ for FILE in "${FILES[@]}"; do
         continue
     fi
 
-    echo "Converting to $FORMAT: `cyan $FILE`"
-
     FILE_WITHOUT_EXT=${FILE%.*}
     NEW_FILE_TEMP="$FILE_WITHOUT_EXT CONVERTING... $((10000 + RANDOM)).$FORMAT"
+
+    echo "Converting to $FORMAT: `cyan $FILE`"
+
+    # custom options
+    if [[ $VERBOSE == true ]]; then
+        FILE_ECHO=$(printf "%q" "${FILE}")
+        OPTIONS_ECHO=$(printf " %q" "$OPTIONS[@]")
+        NEW_FILE_ECHO=$(printf "%q" "$FILE_WITHOUT_EXT converted.$FORMAT")
+        
+        if [[ $CMD == "ffmpeg" ]]; then
+            echo Command: `green ffmpeg -i "$FILE_ECHO""$OPTIONS_ECHO" "$NEW_FILE_ECHO"`
+        elif [[ $CMD == "magick" ]]; then
+            echo Command: `green magick"$OPTIONS_ECHO" "$FILE_ECHO""[0]" "$NEW_FILE_ECHO"`
+        fi
+    fi
+    exit
 
     if [[ $CMD == "ffmpeg" ]]; then
         ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
     elif [[ $CMD == "magick" ]]; then
         magick "${OPTIONS[@]}" "$FILE""[0]" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
-    elif [[ $CMD == "gif" ]]; then
-        ffmpeg -i "$FILE" "${OPTIONS[@]}" "$NEW_FILE_TEMP" || { echo `red Error:` Conversion failed;  exit 1; }
     fi
 
     # clear ffmpeg progress output
