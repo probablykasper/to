@@ -51,6 +51,7 @@ FILENAME=${0##*/}
 ARGS=("$@")
 FORMAT="$1"
 CMD=ffmpeg
+OPTIONS=()
 
 # no args
 if [[ "$#" < 1 ]]; then help; exit 0; fi
