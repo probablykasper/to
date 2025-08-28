@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.5 - 2025 Aug 29
+- Fix image conversion getting stuck
+
 ## 1.5.4 - 2023 Jul 29
 - Fix conversion
 
