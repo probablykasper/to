@@ -1,3 +1,5 @@
+# 📢 This now lives in http://github.com/probablykasper/my-bash-scripts
+
 # to
 
 Pretty simple bash script that converts audio, video and image files using [FFmpeg](https://ffmpeg.org) and [ImageMagick](https://imagemagick.org).
