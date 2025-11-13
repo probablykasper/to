@@ -25,7 +25,7 @@ Options:
 ```
 
 ## Formats
-Running `to` shows the supported formats:
+Running `to --formats` shows the supported formats:
 ```
 Video formats:
     mp4
